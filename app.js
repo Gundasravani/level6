@@ -8,18 +8,20 @@ const path = require("path");
 
 app.set("view engine", "ejs");
 
-app.use(express.static(path.join(__dirname, "public")));
-
 app.get("/", async (request, response) => {
-  const overduetodos = await Todo.overdue();
-  const duetodaytodos = await Todo.dueToday();
-  const duelatertodos = await Todo.dueLater();
+  const allTodos = await Todo.getTodos();
   if (request.accepts("html")) {
-    response.render("index", { overduetodos, duetodaytodos, duelatertodos });
+    response.render("index", {
+      allTodos,
+    });
   } else {
-    response.json({ overduetodos, duetodaytodos, duelatertodos });
+    response.json({
+      allTodos,
+    });
   }
 });
+
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
